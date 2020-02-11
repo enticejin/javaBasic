@@ -43,7 +43,8 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
          */
         http.authorizeRequests().antMatchers("/").permitAll();// "/"：应用首页所有用户都可以访问
         http.authorizeRequests()
-                .antMatchers("user/addUser").hasRole("A") // 首斜杠"/"表示应用上下文,/user/addUser 请求允许 A 角色访问
+                //.antMatchers("user/addUser").hasRole("A") // 首斜杠"/"表示应用上下文,/user/addUser 请求允许 A 角色访问
+                .antMatchers("/**").hasRole("A")
                 .antMatchers("user/deleteUser/**").hasAnyRole("A","B") //"/user/deleteUser/**"允许 "AAA", "BBB" 角色访问，/**匹配任意
                 .antMatchers("user/updateUser").hasAnyRole("A","B")//除了这种链式编程，也可以分开写
                 .antMatchers("user/findAllUsers").access("permitAll");
