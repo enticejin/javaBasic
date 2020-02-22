@@ -1,0 +1,16 @@
+package com.uwbhome.pm.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * 标签的控制器
+ * @author xu.yuanli
+ *
+ */
+@Controller
+@RequestMapping("/tag")
+public class TagInfoController {
+	
+	//todo
+}

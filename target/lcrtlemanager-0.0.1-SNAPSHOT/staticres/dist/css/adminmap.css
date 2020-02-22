@@ -1,0 +1,110 @@
+/*
+ * 这是管理界面的地图使用的 css
+ */
+
+ 		.hideOpacity .layerswitcher-opacity 
+		{	display:none;
+		}
+		.hideOpacity .ol-layerswitcher .layerup
+		{	height: 1.5em;
+		}
+
+		.ol-header > div 
+		{	width:100%; 
+		}
+		.toggleVisibility
+		{	padding-left: 1.6em;
+			cursor: pointer;
+			border-bottom: 2px solid #369;
+			margin-bottom: 0.5em; 
+		}
+		.toggleVisibility:before
+		{	background-color: #fff;
+			border: 2px solid #369;
+			box-sizing: border-box;
+			content: "";
+			display: block;
+			height: 1.2em;
+			left: 0.6em;
+			margin: 0;
+			position: absolute;
+			width: 1.2em;
+		}
+		.toggleVisibility.show:before
+		{	background: #369;
+		}
+	
+
+		.ol-attribution img
+		{	vertical-align:middle;
+		}
+
+		.layerSwitcher
+		{	display:inline-block;
+			background:#cdf;
+			padding:0.5em;
+		}
+			
+		.ol-button i {	color: inherit;
+		}
+		.hello {	right: 50%;
+			top: 0.5em;
+		}
+		.save {	left: 50%;
+			top: 0.5em;
+		}
+		.text {	left: 50%;
+			top: 2.5em;
+		}
+/*		
+      .map {
+        height: 900px;
+        width: 100%;
+      }
+*/
+
+.map {
+  width: 100%;
+  height:100%;
+  position:absolute;
+  left:0px;
+}
+      
+    #css_animation{
+        height:30px; 
+        width:30px;
+        border-radius: 15px; 
+        background: rgba(255, 0, 0, 0.9);
+
+        transform: scale(0);
+        animation: myfirst 3s;      
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes myfirst{
+        to{
+            transform: scale(2);
+            background: rgba(0, 0, 0, 0);
+        }
+    }
+
+.share {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 1px;
+    border-color: #333;
+    background-color: #339999;
+    color: #fff;
+    box-shadow: 0px 0px 2px #666;
+    cursor: pointer;
+    padding: 0 4px 0 4px;
+}
+
+body {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;			
+}
+

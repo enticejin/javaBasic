@@ -1,0 +1,113 @@
+/*登陆页背景颜色 */
+.jl_loginindexbg
+{
+	background: #5a9acc;
+	margin-top: 0px;
+	margin-left: 0px;
+}
+/*登陆页背景图 */
+.jl_loginindexbgimg
+{
+	background: url('../images/back-1.jpg');
+	background-repeat: no-repeat;
+	background-position: center;
+	width:1440px;
+	height:900px;
+	margin: auto;
+	position: absolute;
+	bottom: 0; right: 0; 
+}
+/* 登陆框 */
+.jl_loginmain
+{
+	background: url('../images/login-bg2.png');
+	background-repeat: no-repeat;
+	width: 694px;
+	height: 319px;
+	margin: auto;
+	position: absolute;
+	top:0; left: 0; bottom: 25%; right: 0; 
+}
+/* 用户名 */
+.jl_userNameInput
+{
+	width: 122px;
+	height: 35px;
+	float: left;
+	margin-top: 6px;
+	margin-left: 61px
+}
+*:focus { outline: none; }
+input[type="text"]:focus{line-height: normal; line-height: 2.4em\9;}
+input[type="password"]:focus{line-height: normal; line-height: 2.4em\9;}
+.jl_userNameInput input
+{
+	border:0px;
+	width: 122px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height:32px
+}
+
+/* 密码 */
+.jl_userPwdInput
+{
+	width: 117px;
+	height: 35px;
+	float: left;
+	margin-top: 6px;
+	margin-left: 37px;
+	
+}
+.jl_pwdinput
+{
+	border:0px;
+	width: 116px;
+	height:32px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin-left: 3px;
+}
+/* 验证码 */
+.jl_verificationCodeshow
+{
+	width: 75px;
+	height: 26px;
+	float: left;
+	margin-top: 11px;
+	margin-left: 6px;
+	background:url('../images/vcode.png');
+}
+.jl_verificationCode
+{
+	width: 78px;
+	height: 25px;
+	float: left;
+	margin-top: 11px;
+	margin-left: 5px;
+	background: #eee;
+}
+.jl_verificationCodeinput
+{
+	border:0px;
+	width: 72px;
+	height:23px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin-left: 3px;
+}
+/* 登录按钮 */
+.jl_btnloginContener
+{
+	width: 109px;
+	height: 35px;
+	float: left;
+	margin-top: 6px;
+	margin-left: 5px;
+	background:url('../images/btn_login.png');
+	cursor: pointer;
+}
+.jl_login-box
+{
+	width:100%;
+}

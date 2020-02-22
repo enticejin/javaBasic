@@ -1,0 +1,104 @@
+package com.uwbhome.pm.controller.demo;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import com.uwbhome.pm.controller.BaseController;
+import com.uwbhome.pm.utils.PageData;
+import com.uwbhome.rtle.api.Basemap;
+import com.uwbhome.rtle.api.Basemaps;
+import com.uwbhome.rtle.api.Floor;
+import com.uwbhome.rtle.api.Floors;
+import com.uwbhome.rtle.api.GuardArea;
+import com.uwbhome.rtle.api.GuardAreas;
+import com.uwbhome.rtle.api.RTLEAPI;
+import com.uwbhome.rtle.api.UserFile;
+import com.uwbhome.rtle.api.UserFiles;
+import com.uwbhome.rtle.comm.LonLatPoint;
+import com.uwbhome.rtle.comm.Point2;
+import com.uwbhome.rtle.utils.Misc;
+
+/**
+ * 将坐标显示在demo页面
+ * @author xu.yuanli
+ *
+ */
+@Controller
+@RequestMapping("/coordinate")
+public class LCRealTimeTrackController extends BaseController {
+	
+	//打开坐标的演示页面
+	@RequestMapping(value="/showRealTimeTrack.do")
+	public ModelAndView realTimeTack()
+	{
+		ModelAndView mv=this.getModelAndView();
+		
+		List<PageData> retbp=new ArrayList<PageData>();	
+		LonLatPoint origin=RTLEAPI.getInstance().getOrigin();
+		LonLatPoint lonat = new LonLatPoint(origin.getLongitude(), origin.getLatitude());
+		Point2 lonLat2Meter = Misc.lonLat2Meter(origin, lonat);
+		List<Floor> floorlist = new ArrayList<Floor>();
+		floorlist.addAll(Floors.getInstance().getList().values());
+		Set<Object> floorIds = new HashSet<>();
+		for (Floor floor : floorlist) {
+			Floor floor2 = Floors.getInstance().get(floor.getId());
+			ArrayList<String> basemapIds = floor2.getBasemapIds();
+			for (String basemap : basemapIds) {
+				Basemap bmap = Basemaps.getInstance().get(basemap);			
+				PageData bptemp=new PageData();
+				double centerX = bmap.getCenterX();
+				double centerY = bmap.getCenterY();
+				LonLatPoint lonat1 = new LonLatPoint(centerX, centerY);
+				Point2 lonLat2Meter1 = Misc.lonLat2Meter(origin, lonat1);
+				double pow = Math.pow(lonLat2Meter.getX()-lonLat2Meter1.getX(), 2);
+				double pow2 = Math.pow(lonLat2Meter.getY()-lonLat2Meter1.getY(), 2);
+				double xy = Math.sqrt(pow+pow2);
+				if (xy<=10) {
+					Basemap bp=Basemaps.getInstance().get(bmap.getId());
+					String basemapFile=bp.getBasemapBitmapFilename();
+					UserFile uf=UserFiles.getInstance().get(basemapFile);
+					String ufstring=getPicData(uf);
+					bptemp.put("bp", bp);
+					bptemp.put("ufstring", ufstring);
+					bptemp.put("floor", floor2);
+					retbp.add(bptemp);
+					floorIds.add(floor2.getId());
+				}
+				System.out.println(xy);
+			}
+		}
+		
+		mv.addObject("retbp", retbp);
+		mv.addObject("floorIds", floorIds);
+		mv.setViewName("realTimeTrackShow");
+		return mv;
+	}
+	
+	//返回图片的数据
+		public String getPicData(UserFile uf)
+		{
+				String retufstring="";
+				String ufstring=Base64.encodeBase64String(uf.getFileContent());
+				String fname=uf.getFileName();
+				int pos1=fname.indexOf(".")+1;
+				String fileSuffix=fname.substring(pos1);//文件名后缀
+				switch (fileSuffix) {
+				case "png":
+					retufstring="data:image/png;base64,"+ufstring;
+					break;
+				case "jpg":
+					retufstring="data:image/jpg;base64,"+ufstring;
+					break;
+				default:
+					retufstring="-1";
+					break;
+				}
+				return retufstring;
+		}
+}

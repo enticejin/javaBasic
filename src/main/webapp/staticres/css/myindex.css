@@ -1,0 +1,6 @@
+/* banner的背景 */
+.headbg
+{
+	background-image: url("../images/headbg.png");
+	background-repeat: repeat-x;
+}

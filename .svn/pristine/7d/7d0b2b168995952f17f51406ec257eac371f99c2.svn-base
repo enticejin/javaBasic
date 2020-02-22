@@ -1,0 +1,266 @@
+package com.uwbhome.pm.controller;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.uwbhome.pm.utils.Page;
+import com.uwbhome.pm.utils.PageData;
+import com.uwbhome.rtle.api.Anchor;
+import com.uwbhome.rtle.api.Anchors;
+import com.uwbhome.rtle.api.Area;
+import com.uwbhome.rtle.api.Areas;
+import com.uwbhome.rtle.api.ClockSource;
+import com.uwbhome.rtle.api.ClockSources;
+import com.uwbhome.rtle.api.Floor;
+import com.uwbhome.rtle.api.Floors;
+import com.uwbhome.rtle.api.GuardArea;
+import com.uwbhome.rtle.api.GuardAreas;
+import com.uwbhome.rtle.comm.Point2;
+import com.uwbhome.rtle.comm.Polygon;
+
+/**
+   *  电子围栏控制器
+ * @author xu.yuanli
+ *
+ */
+@Controller
+@RequestMapping("/guardArea")
+public class GuardAreaController extends BaseController {
+		//打开电子围栏列表
+		@RequestMapping(value="/guardArealist.do")
+		public ModelAndView list(Page page)
+		{
+			int currentPage = 0;
+			PageData pd = this.getPageData();
+			String guardname=pd.getString("guardname");
+			List<GuardArea> guararealist = new ArrayList<GuardArea>();
+
+			//从api获取文件数据
+			if(guardname!=null&&guardname.trim()!="")
+			{
+				List<GuardArea> guararealistAll = new ArrayList<GuardArea>();
+				guararealistAll.addAll(GuardAreas.getInstance().getList().values());
+				for (GuardArea ar : guararealistAll) {
+					if(ar.getName().contains(guardname))
+					{
+						guararealist.add(ar);
+					}
+				}
+			}else
+			{
+				guararealist.addAll(GuardAreas.getInstance().getList().values());
+			}
+			//获取分页数据
+			List<GuardArea> guarareaListPage=getCurrentPageData(guararealist,currentPage,this.pageSize);
+			
+			page.setTotalResult(guarareaListPage.size());	
+			page.setTotalPage(page.getTotalPage());
+			page.setCurrentPage(currentPage);
+			page.setShowCount(this.pageSize);
+			page.setCurrentPage(page.getCurrentPage());
+			ModelAndView mv = this.getModelAndView();
+			mv.setViewName("guardarea_list");
+			
+			mv.addObject("varList", guarareaListPage);
+			mv.addObject("pd", pd);
+			return mv;
+		}
+		
+		//打开新增电子围栏页面
+		@RequestMapping(value="/guardareaAdd.do")
+		public ModelAndView guardareaAdd(){	
+			ModelAndView mv=getModelAndView();
+			List<PageData> pdListLQ=locationTriggerData();		
+			List<PageData> pdListFloors = FloorList();
+			PageData pd=new PageData();
+			pd.put("flag", "add");
+			mv.addObject("pdListLQ", pdListLQ);// 定位触发方式
+			mv.setViewName("guardarea_edit");
+			mv.addObject("pd", pd);
+			mv.addObject("pdListFloors", pdListFloors);
+			return mv;
+		}
+		
+		//打开修改电子围栏页面
+		@RequestMapping(value="/GuarareaEdit.do")
+		public ModelAndView GuarareaEdit(){
+			ModelAndView mv=this.getModelAndView();
+			PageData pd1=this.getPageData();
+			String guardId=pd1.get("guardId").toString();//获取需要编辑 的ID
+			GuardArea guard=GuardAreas.getInstance().get(guardId);//获取需要编辑的area对象
+			//定位触发方式
+			List<PageData> pdListLQ=locationTriggerData();
+			List<PageData> pdListFloors = FloorList();		
+			String floor=guard.getFloorId();
+			PageData pd=new PageData();
+			pd.put("flag","update");
+			pd.put("guardInfo",guard);
+			pd.put("floor",floor);
+			mv.addObject("pd", pd);
+			mv.addObject("pdListLQ", pdListLQ);// 定位触发方式
+			mv.addObject("pdListFloors", pdListFloors);
+			mv.setViewName("guardarea_edit");
+			return mv;
+		}
+		
+		//保存区域功能处理
+		@RequestMapping(value="/saveGuardarea.do")
+		@ResponseBody
+		public Object saveGuardarea() 
+		{
+			PageData pd=getPageData();
+			String name=pd.getString("name");//名称
+			boolean enable=Boolean.parseBoolean(pd.getString("enable"));//是否启用	
+			int triggerMode=Integer.parseInt(pd.getString("locationTrigger"));//触发定位的条件
+			String comments=pd.getString("comments");//备注
+			String newGuarID=GuardAreas.getInstance().getNewId();
+			PageData pd1=new PageData();
+			String flag=pd.getString("flag");//获取是更新还是新增的标志	
+			String specifyFloorId=pd.getString("specifyFloorsId");//区域的定位基站列表
+			if(flag!=""){
+			GuardArea guaedBean=null;
+			if(flag.equals("add")){
+				Point2[] point = new Point2[4];
+				point[0] = new Point2(0, 0);
+				point[1] = new Point2(0, 1);
+				point[2] = new Point2(1, 1);
+				point[3] = new Point2(1, 0);
+				Polygon polygon = new Polygon(point);
+				guaedBean=new GuardArea(enable, newGuarID, name, specifyFloorId, comments, triggerMode, polygon);
+				guaedBean.save();
+			}else if(flag.equals("update")){
+				//保存的逻辑
+				String guardId=pd.getString("guardId");//id
+				guaedBean=GuardAreas.getInstance().get(guardId);
+				guaedBean.setId(guardId);
+				guaedBean.setEnable(enable);
+				guaedBean.setName(name);
+				guaedBean.setTriggerMode(triggerMode);
+				guaedBean.setFloorId(specifyFloorId);
+				guaedBean.setComments(comments);
+				guaedBean.setPolygon(guaedBean.getPolygon());
+				guaedBean.save();
+			}
+			
+			}else{
+				//参数错误
+				pd1.put("status", "err");
+				pd1.put("msg", "参数错误");
+			}
+			return  pd1;
+		}
+		
+		//楼层下拉列表
+		public List<PageData> FloorList()
+		{
+			List<PageData> pdFloor = new ArrayList<>();
+			List<Floor> floorList=new ArrayList<Floor>();
+			floorList.addAll(Floors.getInstance().getList().values());
+			for (Floor floor : floorList) {
+				PageData tempPd = new PageData();
+				tempPd.put("id",floor.getId());
+				tempPd.put("name",floor.getName());
+				pdFloor.add(tempPd);
+			}
+			return  pdFloor;
+		}
+		
+		//在地图上编辑区域和基站位置
+		@RequestMapping("/editGuardOnMap.do")
+		public ModelAndView gotoGuardMap()
+		{
+			String type = "area";
+			PageData pd=this.getPageData();
+			String areaId=pd.getString("areaId");
+			String anchorId=pd.getString("anchorId");
+			if(null != anchorId && !"".equals(anchorId)) {
+				type = "anchor";
+				//说明传入的是基站ID，也就是用户点击了基站列表的修改坐标的按钮的触发方式
+				//此时我们需要求出该基站属于哪个区域，因为存在基站共享的问题，所以我们只要找到一个就行、
+				List<Area>  areas=new ArrayList<Area>();
+				areas.addAll(Areas.getInstance().getList().values());
+				for (Area _area : areas) {
+					List<String> anchorIdList = _area.getSpecifyAnchorsId();
+					for (String  aid : anchorIdList) {
+						if(null!=aid && aid.equals(anchorId)){
+							areaId=_area.getId();
+							break;
+						}
+					}
+				}
+				
+			}
+			ModelAndView mv=this.getModelAndView();
+			mv.addObject("areaId",areaId);
+			mv.addObject("type", type);
+			mv.setViewName("guard_map_edit_index");
+			return  mv;
+			
+		}
+		
+		//删除电子围栏功能处理
+		@RequestMapping(value="/delete.do")
+		@ResponseBody
+		public Object deleteArea(){
+			PageData pd=getPageData();
+			String guardId=pd.get("guardId").toString();
+			GuardAreas.getInstance().remove(guardId);
+			PageData pd1=new PageData();
+			pd1.put("status", "ok");
+			pd1.put("msg", "删除成功");
+			return pd1;
+		}
+		
+		//构造触发定位的选择列表
+		public List<PageData> locationTriggerData()
+		{
+			List<PageData> pdListLQ=new ArrayList<PageData>();
+			PageData pdLTQuery1 = new PageData();
+			PageData pdLTQuery2 = new PageData();
+			PageData pdLTQuery3 = new PageData();
+			pdLTQuery1.put("id","1");
+			pdLTQuery1.put("name","in");
+			pdLTQuery2.put("id","2");
+			pdLTQuery2.put("name","out");
+			pdLTQuery3.put("id","3");
+			pdLTQuery3.put("name","in_out");
+			pdListLQ.add(pdLTQuery1);
+			pdListLQ.add(pdLTQuery2);
+			pdListLQ.add(pdLTQuery3);
+			return pdListLQ;
+		}
+		
+		/**
+		 * 返回分页数据
+		 * @param usfilesList
+		 * @param currentPage
+		 * @param showCount
+		 * @return
+		 */
+		public List<GuardArea> getCurrentPageData(List<GuardArea> guarareaList,int currentPage,int showCount)
+		{
+			// 排序
+			Collections.sort(guarareaList, new Comparator<GuardArea>() {
+								@Override
+								public int compare(GuardArea a1, GuardArea a2) {
+									return a1.getName().compareTo(a2.getName());
+								}
+							});
+			//分页
+			List<GuardArea> guarareaListPage = new ArrayList<GuardArea>();
+					int currIdx = (currentPage > 1 ? (currentPage - 1) * showCount : 0);
+					for (int i = 0; i < showCount && i < guarareaList.size() - currIdx; i++) {
+						GuardArea guararea = guarareaList.get(currIdx + i);
+						guarareaListPage.add(guararea);
+					}
+			return guarareaListPage;
+					
+		}
+}

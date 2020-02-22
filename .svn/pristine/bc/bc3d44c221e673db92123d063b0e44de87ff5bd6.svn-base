@@ -1,0 +1,33 @@
+package com.uwbhome.pm.controller.demo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.uwbhome.pm.controller.BaseController;
+
+/**
+ * 将坐标显示在demo页面
+ * @author xu.yuanli
+ *
+ */
+@Controller
+@RequestMapping("/coordinate")
+public class LCRealTimeTrackController extends BaseController {
+	
+	//打开坐标的演示页面
+	@RequestMapping(value="/showRealTimeTrack.do")
+	public ModelAndView realTimeTack()
+	{
+		ModelAndView mv=this.getModelAndView();
+		mv.setViewName("realTimeTrackShow");
+		
+		
+		
+		
+		
+		
+		return mv;
+	}
+	
+}

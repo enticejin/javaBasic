@@ -1,0 +1,189 @@
+package com.uwbhome.pm.controller;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.uwbhome.pm.utils.Page;
+import com.uwbhome.pm.utils.PageData;
+import com.uwbhome.rtle.api.TagType;
+import com.uwbhome.rtle.api.TagTypes;
+
+@Controller
+@RequestMapping("/tagType")
+public class TagTypeController extends BaseController {
+	// 打开标签类型管理列表
+	@RequestMapping(value = "/tagTypeList.do")
+	public ModelAndView tagTypeList(Page page) {
+		int currentPage = 0;
+		 PageData pd = this.getPageData();
+		
+		  //从api获取文件数据 
+		 List<TagType> tagTypeList = new ArrayList<TagType>();
+			
+		 String tagName = pd.getString("name");
+		 if (tagName != null&& tagName.trim() != "")
+		 { 
+			 List<TagType> tagsListAll = new ArrayList<TagType>();
+		  tagsListAll.addAll(TagTypes.getInstance().getList().values()); 
+		  for (TagType tagType : tagsListAll) 
+		  { 
+			  if (tagType.getName().contains(tagName)) 
+			  { tagTypeList.add(tagType); }
+		  }
+		 } else { tagTypeList.addAll(TagTypes.getInstance().getList().values()); }
+		 
+		// 获取分页数据
+		List<TagType> tagListPage = getCurrentPageData(tagTypeList, currentPage, this.pageSize);
+		page.setTotalResult(tagListPage.size());
+		page.setTotalPage(page.getTotalPage());
+		page.setCurrentPage(currentPage);
+		page.setShowCount(this.pageSize);
+		page.setCurrentPage(page.getCurrentPage());
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("tag_list");
+		mv.addObject("varList", tagListPage);
+		mv.addObject("pd", pd);
+		return mv;
+	}
+
+	// 打开新增标签信息页面
+	@RequestMapping("/tagAdd.do")
+	public ModelAndView tagAdd(String defaultIcon) {
+		logBefore(logger, "添加标签TagInfo");
+		PageData pd = this.getPageData();
+		// 创建一个新标签类型Id
+		String newTagTypeId = TagTypes.getInstance().getNewTagTypeId();
+		//接收缺省图标
+		ModelAndView mv = this.getModelAndView();
+		// 传到前台添加页面
+		pd.put("defaultIcon", defaultIcon);
+		pd.put("newTagTypeId", newTagTypeId);
+		pd.put("tagTypeInfo", new TagType());
+		pd.put("flag", "add");
+		mv.setViewName("tag_add");
+		mv.addObject("pd", pd);
+		return mv;
+	}
+
+	// 打开修改标签信息页面
+	@RequestMapping("/tagEdit.do")
+	public ModelAndView tagEdit() {
+		logBefore(logger, "修改TagInfo");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd1 = this.getPageData();
+		String tagId = pd1.getString("tagId").toString();
+		
+		TagType tagType = TagTypes.getInstance().get(tagId);// 获取需要编辑的标签对象
+		
+		PageData pd = new PageData();
+		pd.put("tagInfo", tagType);
+		String tagTypeId = tagType.getId();
+		String tagSourceId = "";
+		if (tagTypeId != null) {
+			tagSourceId = tagType.getId();
+		}
+		pd.put("tagSourceId", tagSourceId);
+		pd.put("flag", "update");
+		mv.addObject("pd", pd);
+		mv.setViewName("tag_edit");
+		return mv;
+	}
+
+	// 保存标签编辑信息
+	@RequestMapping(value = "saveTag.do")
+	@ResponseBody
+	public Object saveTag() {
+		PageData pd = this.getPageData();
+		String tagId = pd.getString("tagId").toString();// 标签类型ID
+		String tagName = pd.getString("tagName").toString();// 标签类型名称
+		String comments = pd.getString("comments").toString();// 备注消息
+		String defaultIcon = pd.getString("defaultIcon").toString();// 备注消息
+		PageData pd1 = new PageData();
+		String flag = pd.getString("flag").toString();// 获取是更新还是新增的标志
+		if (flag != "") {
+			if (flag.equals("update")) {
+				// 保存的逻辑
+				TagType saveBean = TagTypes.getInstance().get(tagId);
+				saveBean.setName(tagName);
+				saveBean.setComments(comments);
+				saveBean.save();
+				pd1.put("status", "ok");
+				pd1.put("msg", "操作成功");
+			}
+			else if (flag.equals("add")) {
+				// 保存的逻辑
+				TagType saveBeanAdd = new TagType(tagId,tagName,comments,defaultIcon);
+				saveBeanAdd.save();
+				pd1.put("status", "ok");
+				pd1.put("msg", "操作成功");
+			} else {
+				// 参数错误
+				pd1.put("status", "err");
+				pd1.put("msg", "参数错误");
+			}
+		}
+		return pd;
+	}
+	// 删除标签类型
+	@RequestMapping(value = "/delete.do")
+	@ResponseBody
+	public Object deleteTag() {
+		PageData pd = getPageData();
+		String tagId = pd.get("tagId").toString();
+		TagTypes.getInstance().remove(tagId);
+		PageData pd1 = new PageData();
+		pd1.put("status", "ok");
+		pd1.put("msg", "删除成功");
+		return pd1;
+	}
+	//检查标签类型是否存在
+	@RequestMapping(value = "/existByName")
+		@ResponseBody
+		public Object existByName() throws Exception{
+					PageData pd = this.getPageData();
+					//获取添加页面的标签名称
+					String tageTypeName=pd.getString("tagName").toString();
+					//获取已经保存的所有标签
+					Collection<TagType> tagTypes =  TagTypes.getInstance().getList().values();
+					//遍历判断是否存在同名标签类型
+					for(TagType t : tagTypes) {
+						if(t.getName().toString().equals(tageTypeName)) {
+							//标签类型名已存在
+							return 1;
+						}
+						else {
+							//标签类型名不存在
+							return 0;
+						}
+					}
+					return tagTypes;
+		    }
+	public List<TagType> getCurrentPageData(List<TagType> tagTypeList, int currentPage, int showCount) {
+		// 排序
+		Collections.sort(tagTypeList, new Comparator<TagType>() {
+			@Override
+			public int compare(TagType t1, TagType t2) {
+				return t1.getName().compareTo(t2.getName());
+			}
+		});
+		// 分页
+		List<TagType> tagTypeListPage = new ArrayList<TagType>();
+		int currIdx = (currentPage > 1 ? (currentPage - 1) * showCount : 0);
+		for (int i = 0; i < showCount && i < tagTypeList.size() - currIdx; i++) {
+			TagType tag = tagTypeList.get(currIdx + i);
+			tagTypeListPage.add(tag);
+		}
+		return tagTypeListPage;
+
+	}
+
+}
