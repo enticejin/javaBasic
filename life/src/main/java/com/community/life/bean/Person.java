@@ -13,6 +13,10 @@ import java.util.Map;
 @Component
 //获取配置文件中的对象对应值ConfigurationProperties
 //@ConfigurationProperties(prefix = "person")
+/**
+ * 使用某项值的时候使用@Value
+ * 使用某个javaBean来映射配置文件的时候使用@ConfigurationProperties
+ */
 @Validated
 public class Person {
     //@Value也可以获取值
