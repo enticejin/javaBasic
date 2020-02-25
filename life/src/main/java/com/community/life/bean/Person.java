@@ -2,6 +2,7 @@ package com.community.life.bean;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -10,9 +11,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@PropertySource(value = {"classpath:person.properties"})
 @Component
 //获取配置文件中的对象对应值ConfigurationProperties
-//@ConfigurationProperties(prefix = "person")
+@ConfigurationProperties(prefix = "person")
 /**
  * 使用某项值的时候使用@Value
  * 使用某个javaBean来映射配置文件的时候使用@ConfigurationProperties
@@ -21,11 +23,11 @@ import java.util.Map;
 public class Person {
     //@Value也可以获取值
     //@Value("${person.last-name}")
-    @Email
+    //@Email
     private String lastName;
-    @Value("#{11 * 2 }")
+    //@Value("#{11 * 2 }")
     private Integer age;
-    @Value("true")
+    //@Value("true")
     private Boolean boss;
     private Date birth;
 
