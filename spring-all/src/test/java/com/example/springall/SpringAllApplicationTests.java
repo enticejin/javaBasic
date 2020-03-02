@@ -1,10 +1,10 @@
-package com.example.springschedultask;
+package com.example.springall;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringSchedulTaskApplicationTests {
+class SpringAllApplicationTests {
 
     @Test
     void contextLoads() {

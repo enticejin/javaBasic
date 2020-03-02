@@ -1,13 +1,13 @@
-package com.example.springschedultask;
+package com.example.springall;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringSchedulTaskApplication {
+public class SpringAllApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringSchedulTaskApplication.class, args);
+        SpringApplication.run(SpringAllApplication.class, args);
     }
 
 }
