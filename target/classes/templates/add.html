@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- 使用thymeleaf需引入 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div  id="tableP">
+    <table>
+        <caption>人员信息</caption>
+        <tr>
+            <th>Name</th>
+            <th>E-mail</th>
+        </tr>
+        <!-- 通过th命令使用一些操作 -->
+        <!-- 通过${} 使用变量 -->
+        <tr>
+            <!--<td th:text="${{item.name}}" th:id="${{item.id}}">还没有任何人员信息哦</td>-->
+            <td><input type="text" id="userName" ></td>
+            <td><input type="text" id="userEmail"></td>
+            <td><button  id="enterTxt">确认</button></td>
+            <td><button  id="cancel">取消</button></td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<script>
+    //保存按钮
+    document.getElementById("enterTxt").onclick=function () {
+       /* var name =  '[[${person.name}]]'
+        var email =  '[[${person.email}]]'*/
+       var userName =  document.getElementById("userName").value;
+        var userEmail =  document.getElementById("userEmail").value;
+        window.location="/save?name="+userName+"&email="+userEmail;
+
+    }
+    //取消按钮
+    document.getElementById("cancel").onclick=function () {
+        window.location.href="http://127.0.0.1:8080/";
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- 使用thymeleaf需引入 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div  id="tableP">
+    <table>
+        <caption>人员信息</caption>
+        <tr>
+            <th>Name</th>
+            <th>E-mail</th>
+        </tr>
+        <!-- 通过th命令使用一些操作 -->
+        <!-- 通过${} 使用变量 -->
+        <tr  th:each="item: ${list}">
+            <td th:text="${{item.name}}" th:id="${{item.id}}">还没有任何人员信息哦</td>
+            <td th:text="${{item.email}}">你是不是想独吞奖品</td>
+            <td><button  th:id="${{item.id}}" onclick="copy(this.id)">复制</button></td>
+            <td><button  th:id="${{item.id}}" onclick="deleteTxt(this.id)">删除</button></td>
+            <td><button  th:id="${{item.id}}" onclick="updateTxt(this.id)">修改</button></td>
+        </tr>
+    </table>
+    <button onclick="addTxt()">添加</button>
+</div>
+</div>
+
+<script>
+    //复制
+    function copy(id) {
+        window.location="/copy?id="+id;
+    }
+    //删除
+    function deleteTxt(id) {
+        window.location="/deleteTxt?id="+id;
+    }
+    //修改
+    function updateTxt(id) {
+        window.location="/updateTxt?id="+id;
+    }
+    //修改
+    function addTxt() {
+        window.location="/addTxt";
+    }
+</script>
+</body>
+</html>

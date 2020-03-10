@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!-- 使用thymeleaf需引入 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div  id="tableP">
+    <table>
+        <caption>人员信息</caption>
+        <tr>
+            <th>Name</th>
+            <th>E-mail</th>
+        </tr>
+        <!-- 通过th命令使用一些操作 -->
+        <!-- 通过${} 使用变量 -->
+        <tr  th:each="person: ${person}">
+            <td th:text="${{person.name}}" th:id="${{person.id}}">还没有任何人员信息哦</td>
+            <td th:text="${{person.email}}">你是不是想独吞奖品</td>
+            <td><button id="enterTxt">确认</button></td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<script>
+   document.getElementById("enterTxt").onclick=function () {
+        var name =  '[[${person.name}]]'
+       var email =  '[[${person.email}]]'
+        window.location="/save?name="+name+"&email="+email;
+
+   }
+</script>
+</body>
+</html>
