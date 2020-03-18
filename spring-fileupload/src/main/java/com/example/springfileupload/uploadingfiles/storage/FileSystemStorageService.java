@@ -1,45 +1,51 @@
 package com.example.springfileupload.uploadingfiles.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 @Service
 public class FileSystemStorageService implements StorageService {
     private final Path rootLocation;
 
     @Autowired
-    public FileSystemStorageService(Path rootLocation) {
-        this.rootLocation = rootLocation;
-    }
-
-
-    @Override
-    public void init() {
-        try {
-            Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            throw  new StorageException("不能初始化： ", e);
-        }
+    public FileSystemStorageService(StorageProperties properties) {
+        this.rootLocation = Paths.get(properties.getLocation());
     }
 
     @Override
     public void store(MultipartFile file) {
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {
-            if (file.isEmpty()){
-                throw new StorageException("加载空文件失败： "+file.getOriginalFilename());
+            if (file.isEmpty()) {
+                throw new StorageException("Failed to store empty file " + filename);
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
-        } catch (IOException e) {
-            throw  new StorageException("加载失败： "+file.getOriginalFilename(), e);
+            if (filename.contains("..")) {
+                // This is a security check
+                throw new StorageException(
+                        "Cannot store file with relative path outside current directory "
+                                + filename);
+            }
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, this.rootLocation.resolve(filename),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+        catch (IOException e) {
+            throw new StorageException("加载文件失败" + filename, e);
         }
     }
 
@@ -48,36 +54,50 @@ public class FileSystemStorageService implements StorageService {
         try {
             return Files.walk(this.rootLocation, 1)
                     .filter(path -> !path.equals(this.rootLocation))
-                    .map(path -> this.rootLocation.relativize(path));
-        } catch (IOException e) {
-            throw new StorageException("读取加载文件失败： ",e);
+                    .map(this.rootLocation::relativize);
         }
+        catch (IOException e) {
+            throw new StorageException("读取文件失败！", e);
+        }
+
     }
 
     @Override
-    public Path load(String fileName) {
-        return rootLocation.resolve(fileName);
+    public Path load(String filename) {
+        return rootLocation.resolve(filename);
     }
 
     @Override
-    public Resource loadAsResource(String fileName) {
-
+    public Resource loadAsResource(String filename) {
         try {
-            Path file = load(fileName);
+            Path file = load(filename);
             Resource resource = new UrlResource(file.toUri());
-            if(resource.exists() || resource.isReadable()){
+            if (resource.exists() || resource.isReadable()) {
                 return resource;
             }
             else {
-                throw new StorageFileNotFoundException("无法读到文件： "+ fileName);
+                throw new StorageFileNotFoundException(
+                        "无法获取此文件: " + filename);
+
             }
-        } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("无法读取到文件: "+fileName, e);
+        }
+        catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("无法获取此文件: " + filename, e);
         }
     }
 
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    @Override
+    public void init() {
+        try {
+            Files.createDirectories(rootLocation);
+        }
+        catch (IOException e) {
+            throw new StorageException("初始化storage失败", e);
+        }
     }
 }
