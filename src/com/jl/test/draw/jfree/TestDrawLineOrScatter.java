@@ -1,34 +1,27 @@
 package com.jl.test.draw.jfree;
-import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYShapeRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 import com.jl.test.draw.useable.OverlaidDrawLineScatter;
+import com.jl.test.draw.utils.ChartUtilOpt;
 
-public class DrawLineOrScatter extends ApplicationFrame {
+public class TestDrawLineOrScatter extends ApplicationFrame {
 
     private static final long serialVersionUID = 1L;
 
-    public DrawLineOrScatter(String title) {
+    public TestDrawLineOrScatter(String title) {
 
         super(title);
         JFreeChart chart = createOverlaidChart();
@@ -72,17 +65,44 @@ public class DrawLineOrScatter extends ApplicationFrame {
      * @return The dataset.
      */
     private DefaultXYDataset createDatasetLine() {
-        
         DefaultXYDataset dataset = new DefaultXYDataset();
-        double[][] data= {{1,2,3},{4,5,6}};
+         double[][] data= {{1,2,3},{4,5,6}};
         dataset.addSeries("拟合数据", data);
         return dataset;
     }
     
     private DefaultXYDataset createDatasetScatter() {
-    	
-        DefaultXYDataset dataset = new DefaultXYDataset();
-        double[][] data= {{1,2,3},{4.6,4.8,6.8}};
+    	 // 初始化
+ 		ChartUtilOpt chartOpt = new ChartUtilOpt();
+ 		// 读取文件
+ 		List<String> csvColList = chartOpt.getCol("D:/work/pointinfo_solve.csv");
+ 		List<String> XListStr = new ArrayList<String>();
+ 		List<String> YListStr = new ArrayList<String>();
+ 		List<String> ZListStr = new ArrayList<String>();
+ 		for(int i = 0;i < csvColList.size();i++) {
+ 			XListStr.add(csvColList.get(i).split("\\|")[0]);
+ 			YListStr.add(csvColList.get(i).split("\\|")[1]);
+ 			ZListStr.add(csvColList.get(i).split("\\|")[2]);
+ 		}
+ 		double[] xList =  chartOpt.getArrayByStrList(XListStr);
+ 		double[] yList =  chartOpt.getArrayByStrList(YListStr);
+ 		double[] zList =  chartOpt.getArrayByStrList(ZListStr);
+ 		List<String> XListStrArea = new ArrayList<String>();
+ 		List<String> YListStrArea = new ArrayList<String>();
+ 		for(int i =0;i < XListStr.size();i++) {
+ 			if(Double.parseDouble(XListStr.get(i).toString()) < -11 && 
+ 					Double.parseDouble(XListStr.get(i).toString()) > -12 && 
+ 					Double.parseDouble(YListStr.get(i).toString()) < -2 && 
+ 					Double.parseDouble(YListStr.get(i).toString()) > -5) {
+ 				XListStrArea.add(XListStr.get(i));
+ 				YListStrArea.add(YListStr.get(i));
+ 			}
+ 		}
+ 		//ymin=-3.62 ymax=-3.34  xmin=-11.85  xmax=-11.5
+ 		double[] xListDou = chartOpt.getArrayByStrList(XListStrArea);
+ 		double[] yListDou = chartOpt.getArrayByStrList(YListStrArea);
+         DefaultXYDataset dataset = new DefaultXYDataset();
+         double[][] data= {xList,yList};
         dataset.addSeries("原始数据", data);
         return dataset;
     }

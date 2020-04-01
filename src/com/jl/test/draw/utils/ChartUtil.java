@@ -2,6 +2,11 @@ package com.jl.test.draw.utils;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +46,7 @@ public class ChartUtil {
 					if(sub[i] > 0 && sub[i] < 0.05) {
 						list.add(sub[i]);
 					}else {
-						list.add(0.05);
+						list.add(0.005);
 					}
 				}
 				//截取列表
@@ -99,8 +104,8 @@ public class ChartUtil {
 	        //实现简单的气泡图，设置基本的数据
 	        JFreeChart freeChart=ChartFactory.createBubbleChart(
 	                title,// 图表标题
-	                yTag,//y轴方向数据标签
 	                xTag,//x轴方向数据标签
+	                yTag,//y轴方向数据标签
 	                dataset,//数据集，即要显示在图表上的数据
 	                PlotOrientation.HORIZONTAL,//设置方向
 	                true,//是否显示图例
@@ -118,5 +123,47 @@ public class ChartUtil {
 	        frame.setContentPane(chartPanel);
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setVisible(true);
+		}
+		/**
+		 * 读取.csv文件数据
+		 * @param row 行
+		 * @param col 列
+		 * @param filePath 文件路径
+		 */
+		public List<String> getAllCSV(String filePath) {
+			File csv = new File(
+					filePath); // CSV文件路径
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(csv));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			String line = "";
+			String everyLine = "";
+			List<String> allString = new ArrayList<>();
+			try {
+				while ((line = br.readLine()) != null) // 读取到的内容给line变量
+				{
+					everyLine = line;
+					allString.add(everyLine);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return allString;
+		}
+		/**
+		 * 读取文件坐标列的内容
+		 * @param filePath 文件路径
+		 * @return
+		 */
+		public List<String> getCol(String filePath){
+			List<String> allCSV =getAllCSV(filePath);
+			List<String> allCSVIndex = new ArrayList<String>();
+			for(int i = 0 ; i < allCSV.size(); i++) {
+				allCSVIndex.add(allCSV.get(i).split(",")[3]);
+			}
+			return allCSVIndex;
 		}
 }

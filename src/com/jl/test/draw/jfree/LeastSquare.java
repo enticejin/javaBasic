@@ -120,12 +120,5 @@ public class LeastSquare {
 		Double maxY = k*maxX+b;
 		Double minY = k*minX+b;
 		
-		DrawLineOrScatter img = new DrawLineOrScatter();
-		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
-				
-		dataset.addValue(minY, "", minY);
-		dataset.addValue(maxY, "", maxX);
-		img.drawLine();
-		
 	}
 }

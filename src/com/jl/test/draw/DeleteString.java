@@ -28,7 +28,12 @@ import java.util.Scanner;
 			System.out.println("É¾³ýÁË" +result[1] + "´Î");
 		}
 		
-		
+		/**
+		 * É¾³ýÖ¸¶¨×Ö·û´®
+		 * @param str1 Ô­×Ö·û´®
+		 * @param str2 ÐèÒªÉ¾³ýµÄ×Ö·û´®
+		 * @return
+		 */
 		public Object[] deleteSubString(String str1,String str2) {
 			StringBuffer sb = new StringBuffer(str1);
 			int delCount = 0;
@@ -54,6 +59,12 @@ import java.util.Scanner;
 			
 			return obj;
 		}
+		/**
+		 * »ñÈ¡ÇÐ¸îºóµÄ×Ö·û´®
+		 * @param str1 Ô­×Ö·û´®
+		 * @param str2 ÇÐ¸îµÄ×Ö·û´®
+		 * @return
+		 */
 		public Map<String, Object> getSubString(String str1,String str2) {
 			List<String> stringList1 = new ArrayList<String>();
 			List<String> stringList2 = new ArrayList<String>();

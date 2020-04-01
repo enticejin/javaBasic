@@ -125,12 +125,13 @@ public class ChartTest extends ApplicationFrame {
        double[] xArray = chartOpt.getArrayByList(XList);
        double[] yArray = chartOpt.getArrayByList(YList);
        //chart.getFreeChart("pre1-test", "x", "y", yArray, xArray);
-       File file = new File("D:/point_info.txt");
+       /*
+        File file = new File("D:/point_info.txt");
       
        String str = txt2String(file);
        DeleteString delete = new DeleteString();
        Object[] result =  delete.deleteSubString(str, "|1.0");
-      //System.out.println("É¾³ý×Ö´®ºó£º"+result[0]);
+       //System.out.println("É¾³ý×Ö´®ºó£º"+result[0]);
        String strResult = result[0].toString();
        String strResult1 = delete.deleteSubString(strResult, "|")[0].toString();
        System.out.println("strResult1 = "+strResult1);
@@ -147,6 +148,42 @@ public class ChartTest extends ApplicationFrame {
     		   XListStr.add(strArray[i]);
     	   }
     	   
+       }
+       if(XListStr.size() - YListStr.size() > 0) {
+    	   XListStr =  XListStr.subList(0, YListStr.size());
+       }else {
+    	   YListStr = YListStr.subList(0, XListStr.size());
+       }
+       //System.out.println(XListStr.subList(1, XListStr.size()));
+       double[] xListStr = chartOpt.getArrayByStrList(XListStr);
+       double[] yListStr = chartOpt.getArrayByStrList(YListStr);
+       for(int i = 0; i < xListStr.length;i++) {
+    	   xListStr[i] = 0 - xListStr[i];
+    	   yListStr[i] = 0 - yListStr[i];
+       }
+       chart.getFreeChart("re-test", "x", "y", xListStr, yListStr);
+       */
+       
+       
+       List<String> csvColList = chartOpt.getCol("D:\\pointinfo_solve.csv");
+       DeleteString delete = new DeleteString();
+       Object[] result =  delete.deleteSubString(csvColList.toString(), "|1.0, ");
+       
+       //System.out.println("É¾³ýºó£º"+result[0]);
+       //String strResult = result[0].toString();
+       String strResult1 = delete.deleteSubString(result[0].toString(), "|")[0].toString();
+       String[] xyArray = strResult1.split("-");
+       List<String> XListStr = new ArrayList<String>();
+       List<String> YListStr = new ArrayList<String>();
+       for(int i = 0; i < xyArray.length;i++) {
+    	   if(xyArray[i].length() == 0) {
+    		   continue;
+    	   }
+    	   if( i % 2 == 0) {
+    		   YListStr.add(xyArray[i]);
+    	   }else {
+    		   XListStr.add(xyArray[i]);
+    	   }
        }
        if(XListStr.size() - YListStr.size() > 0) {
     	   XListStr =  XListStr.subList(0, YListStr.size());
