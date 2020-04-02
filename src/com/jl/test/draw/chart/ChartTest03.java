@@ -7,6 +7,7 @@ import com.jl.test.draw.utils.ChartUtilOpt;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,8 @@ class ChartTest03 extends JPanel
     	String filePath = "D:/work/pointinfo_solve.csv";
         double[] xDataArray = getXData(filePath);
         double[] yDataArray = getYData(filePath);
+        //Arrays.sort(xDataArray);
+        //Arrays.sort(yDataArray);
         //int x0=getSize().width/2;
         int x0=getSize().width/2;
 		int y0=getSize().height/2;//×ø±êÔ­µã 
@@ -80,7 +83,9 @@ class ChartTest03 extends JPanel
 //			g2d.drawOval(x, y, 8, 8);
 			for(int j =0;j < size;j++) {
 				g2d.setColor(getColor(j));
-				g2d.drawOval(x, y, j, j);
+				if(x != x0 && y != y0) {
+					g2d.drawOval(x+j, y+j, size-10*j, size-10*j); 
+				}
 			}
         }
         g2d.setFont(fn2);

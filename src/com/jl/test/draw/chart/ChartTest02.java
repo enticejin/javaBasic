@@ -6,6 +6,7 @@ import com.jl.test.draw.utils.ChartUtilOpt;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /**
  * 展示文件中所有的坐标点
@@ -27,6 +28,8 @@ class ChartTest02 extends JPanel
     	String filePath = "D:/work/pointinfo_solve.csv";
         double[] xDataArray = getXData(filePath);
         double[] yDataArray = getYData(filePath);
+        //Arrays.sort(xDataArray);
+        //Arrays.sort(yDataArray);
         //int x0=getSize().width/2;
         int x0=getSize().width/2;
 		int y0=getSize().height/2;//坐标原点 
@@ -70,7 +73,7 @@ class ChartTest02 extends JPanel
 			//x < 0, y < 0
 			for(int j =0;j < size;j++) {
 				g2d.setColor(getColor(j));
-				g2d.drawOval(x, y, j, j);
+				g2d.drawOval(x+j, y+j, size-10*j, size-10*j); 
 			}
         }
         g2d.setFont(fn2);
