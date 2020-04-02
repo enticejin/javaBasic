@@ -7,22 +7,23 @@ import com.jl.test.draw.utils.ChartUtilOpt;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 
  * @author Administrator
- *指定区间取值
+ *指定区间取值放大
  */
-class ChartTest03 extends JPanel
+class ChartTest04 extends JPanel
 {
 	ChartUtilOpt chartOpt = new ChartUtilOpt();
     Polygon po = new Polygon();
     //设置字体及大小
     Font fn = new Font("宋体", Font.BOLD, 22);
     Font fn2 = new Font("宋体", Font.BOLD, 20);
-    public ChartTest03()
+    public ChartTest04()
     {
     	//获取当前屏幕的宽和高
         Dimension screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
@@ -33,8 +34,12 @@ class ChartTest03 extends JPanel
     public void paint(Graphics g)
     {
     	String filePath = "D:/work/pointinfo_solve.csv";
-        double[] xDataArray = getXData(filePath);
-        double[] yDataArray = getYData(filePath);
+    	Map<String, double[]> map1 = getXYData(filePath);
+        //double[] xDataArray = getXData(filePath);
+    	//double[] yDataArray = getYData(filePath);
+        double[] xDataArray = map1.get("xList");
+        double[] yDataArray = map1.get("yList");
+     
         //int x0=getSize().width/2;
         int x0=getSize().width/2;
 		int y0=getSize().height/2;//坐标原点 
@@ -43,44 +48,45 @@ class ChartTest03 extends JPanel
         //设置背景色
         g2d.setColor(Color.black);
         //x坐标线
-        g2d.fillRect(0, y0, x0*2, 2);
+        g2d.fillRect(0, y0, x0, 2);
         //y坐标线
-        g2d.fillRect(x0, 0, 2, y0*2);
-        int num = 2;
+        g2d.fillRect(x0, y0, 2, y0);
+        //对应的坐标比例
+        int xSize = 4;
+        int ySize = 4;
         g2d.drawString("0", x0, y0-15);
-        
-      //纵坐标刻度
-        for(int i =0;i < 40;i++) {
-        	if (i % num == 0 && i / num != 0)
-        	{
-        		//纵坐标刻度
-        		//g2d.drawOval(x0, y0, 10, 10);
-        		g2d.drawString("-"+String.valueOf(i / num), x0-20, y0+i*10);
-        		g2d.drawString(String.valueOf(i / num), x0-20, y0-i*10);
-        	}
-        }
       //横坐标刻度
-        for(int i = 0;i < 60;i++) {
-        	if(i % num == 0 && i / num != 0) {
-        		g2d.drawString("-"+String.valueOf(i / num), x0-i*10, y0-15);
-        		g2d.drawString(String.valueOf(i / num), x0+i*10, y0-15);
+        for(int i = 0;i < y0/10;i++) {
+        	if(i % xSize == 0 && i / xSize != 0) {
+        		g2d.drawString("-"+String.valueOf(i / xSize), x0-i*10, y0-15);
         	}
         }
+      //纵坐标刻度
+        for(int i =0;i < x0/10;i++) {
+        	if (i % ySize == 0 && i / ySize != 0)
+        	{
+        		g2d.drawString("-"+String.valueOf(i / ySize), x0-20, y0+i*10);
+        	}
+        }
+      
         int x = 0;
         int y = 0;
         //画圆的直径
         int size = 10;
-        Map<String, double[]> map = chartOpt.getAreaXY(-9,0, -2, 0, xDataArray, yDataArray);
+        Map<String, double[]> map = chartOpt.getAreaXY(-9,0, -4, 0, xDataArray, yDataArray);
         double[] xArr = map.get("xArray");
         double[] yArr =  map.get("yArray");
+        g2d.setColor(getRandomColor());
         for(int i = 0;i < xArr.length;i++) {
         	//在图上描出对应坐标
-    		x = (int) (x0+xArr[i]*20);
-			y= (int) (y0-yArr[i]*20);
+    		x = (int) (x0+xArr[i]*20*(xSize / 2));
+			y= (int) (y0-yArr[i]*20*(ySize / 2));
 //			g2d.drawOval(x, y, 8, 8);
 			for(int j =0;j < size;j++) {
 				g2d.setColor(getColor(j));
-				g2d.drawOval(x, y, j, j);
+				if(x != x0 && y!=y0) {
+					g2d.drawOval(x, y, j, j);
+				}
 			}
         }
         g2d.setFont(fn2);
@@ -89,8 +95,8 @@ class ChartTest03 extends JPanel
         g2d.setFont(fn);
         g2d.setColor(Color.black);
         //在页面上写出X，Y
-        g2d.drawString("X", x0+900, y0+25);
-        g2d.drawString("Y", x0-30, y0-400);
+        g2d.drawString("X", x0-400, y0+25);
+        g2d.drawString("Y", x0-30, y0+400);
     }
     
     Color getRandomColor()//随机数
@@ -171,6 +177,31 @@ class ChartTest03 extends JPanel
     	return yList;
     	
     }
+    /**
+     * 读取文件中纵坐标的数据
+     * @param filePath 文件路径
+     * @return
+     */
+    public Map<String, double[]> getXYData(String filePath){
+    	// 初始化
+    	ChartUtilOpt chartOpt = new ChartUtilOpt();
+    	Map<String, double[]> map = new HashMap<String, double[]>();
+    	// 读取文件
+    	List<String> csvColList = chartOpt.getCol(filePath);
+    	//获取y数据
+    	List<String> YListStr = new ArrayList<String>();
+    	List<String> XListStr = new ArrayList<String>();
+    	for(int i = 0;i < csvColList.size();i++) {
+    		YListStr.add(csvColList.get(i).split("\\|")[1]);
+    		XListStr.add(csvColList.get(i).split("\\|")[0]);
+    	}
+    	double[] yList =  chartOpt.getArrayByStrList(YListStr);
+    	double[] xList =  chartOpt.getArrayByStrList(XListStr);
+    	map.put("xList", xList);
+    	map.put("yList", yList);
+    	return map;
+    	
+    }
     public static void main(String[] args)
     {
     	//获取当前屏幕的宽和高
@@ -186,6 +217,6 @@ class ChartTest03 extends JPanel
         jf.setSize(1000, 1000);
         jf.setVisible(true);
         jf.setDefaultCloseOperation(3);
-        jf.getContentPane().add(new ChartTest03());
+        jf.getContentPane().add(new ChartTest04());
     }
 }

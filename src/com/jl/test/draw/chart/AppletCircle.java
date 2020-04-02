@@ -27,12 +27,6 @@ public class AppletCircle  extends Applet{
 		  g.setColor(color);
 		  g.drawOval(20+5*i, 30+5*i, 300-10*i, 300-10*i); 
 		}
-		try {
-			System.out.println(getPixel(70, 80).getRed());
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	public Color getPixel(int x,int y) throws AWTException{            //函数返回值为颜色的RGB值。
 		   Robot rb = null;                                                   //java.awt.image包中的类，可以用来抓取屏幕，即截屏。

@@ -9,7 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -364,6 +366,75 @@ public class ChartUtilOpt {
 				allCSVIndex.add(allCSV.get(i).split(",")[3]);
 			}
 			return allCSVIndex;
+		}
+		
+		/**
+		 * 获取指定区间的x值
+		 * @param x1 区间起点
+		 * @param x2 区间终点
+		 * @param xArr x坐标数组
+		 * @param yArr y坐标数组
+		 * @return
+		 */
+		public double[] getAreaX(double x1, double x2, double[] xArr, double[] yArr) {
+			List<Double> xlist = new ArrayList<Double>();
+			List<Double> ylist = new ArrayList<Double>();
+			for(int i = 0;i < xArr.length; i++) {
+				if(xArr[i] >= x1 && xArr[i] <= x2) {
+					xlist.add(xArr[i]);
+					ylist.add(yArr[i]);
+				}
+			}
+			return getArrayByList(xlist);
+		}
+		/**
+		 * 获取指定区间的y值
+		 * @param y1 区间起点
+		 * @param y2 区间终点
+		 * @param xArr x坐标数组
+		 * @param yArr y坐标数组
+		 * @return
+		 */
+		public double[] getAreaY(double y1, double y2, double[] xArr, double[] yArr) {
+			List<Double> xlist = new ArrayList<Double>();
+			List<Double> ylist = new ArrayList<Double>();
+			for(int i = 0;i < yArr.length; i++) {
+				if(yArr[i] >= y1 && yArr[i] <= y2) {
+					xlist.add(xArr[i]);
+					ylist.add(yArr[i]);
+				}
+			}
+			return getArrayByList(ylist);
+		}
+		
+		/**
+		 * 获取指定区间的x, y值
+		 * @param x1 区间起点
+		 * @param x2 区间终点
+		 * @param y1 区间起点
+		 * @param y2 区间终点
+		 * @param xArr x数组
+		 * @param yArr y数组
+		 * @return
+		 */
+		public Map<String, double[]> getAreaXY(double x1,double x2, double y1, double y2,double[] xArr, double[] yArr) {
+			List<Double> xlist = new ArrayList<Double>();
+			List<Double> ylist = new ArrayList<Double>();
+			if(xArr.length == yArr.length && x1 != x2 && y1 != y2) {
+
+				Map<String, double[]> map = new HashMap<String, double[]>();
+				for(int i = 0;i < yArr.length; i++) {
+					if(yArr[i] >= y1 && yArr[i] <= y2 && xArr[i] >= x1 && xArr[i] <= x2) {
+						xlist.add(xArr[i]);
+						ylist.add(yArr[i]);
+					}
+				}
+				map.put("yArray", getArrayByList(ylist));
+				map.put("xArray", getArrayByList(xlist));
+				return map;
+			}else {
+				return null;
+			}
 		}
 		
 }

@@ -7,7 +7,11 @@ import com.jl.test.draw.utils.ChartUtilOpt;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * 展示文件中所有的坐标点
+ * @author Administrator
+ *
+ */
 class ChartTest02 extends JPanel
 {
     Polygon po = new Polygon();
@@ -61,43 +65,13 @@ class ChartTest02 extends JPanel
         int size = 10;
         //遍历数组画出坐标
         for(int i = 0;i < xDataArray.length;i++) {
-        	if(xDataArray[i] < 0) {
-        		if(yDataArray[i] < 0) {
-        			x = (int) (x0+xDataArray[i]*20);
-        			y= (int) (y0-yDataArray[i]*20);
-        			//x < 0, y < 0
-        			for(int j =0;j < size;j++) {
-        				g2d.setColor(getColor(j));
-        				g2d.drawOval(x, y, j, j);
-        			}
-        		}else if(yDataArray[i] >= 0) {
-        			//x < 0, y >= 0
-        			x = (int) (x0+xDataArray[i]*20);
-        			y= (int) (y0-yDataArray[i]*20);
-        			for(int j =0;j < size;j++) {
-        				g2d.setColor(getColor(j));
-        				g2d.drawOval(x, y, j, j);
-        			}
-        		}
-        	}else {
-        		if(yDataArray[i] < 0) {
-        			//x > 0, y < 0
-        			x = (int) (x0+xDataArray[i]*20);
-        			y= (int) (y0-yDataArray[i]*20);
-        			for(int j =0;j < size;j++) {
-        				g2d.setColor(getColor(j));
-        				g2d.drawOval(x, y, j, j);
-        			}
-        		}else {
-        			//x > 0, y > 0
-        			x = (int) (x0+xDataArray[i]*20);
-        			y= (int) (y0-yDataArray[i]*20);
-        			for(int j =0;j < size;j++) {
-        				g2d.setColor(getColor(j));
-        				g2d.drawOval(x, y, j, j);
-        			}
-        		}
-        	}
+        	x = (int) (x0+xDataArray[i]*20);
+			y= (int) (y0-yDataArray[i]*20);
+			//x < 0, y < 0
+			for(int j =0;j < size;j++) {
+				g2d.setColor(getColor(j));
+				g2d.drawOval(x, y, j, j);
+			}
         }
         g2d.setFont(fn2);
         g2d.setColor(Color.white);
