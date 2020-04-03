@@ -99,7 +99,9 @@ class ChartTest05 extends JPanel
         //x, y排序
         //Arrays.sort(x_Array);
         //Arrays.sort(y_Array);
-        int colorRedArray[] = new int[x_Array.length];
+        //画出曲线
+        QuadCurve2D q1 = new QuadCurve2D.Float();
+		g2d.setColor(Color.BLACK);
         for(int i = 0;i < xArr.length;i++) {
         	//在图上描出对应坐标
     		x = (int) (x0+xArr[i]*xSize * 10);
@@ -112,7 +114,16 @@ class ChartTest05 extends JPanel
 					g2d.drawOval(x+j, y+j, size-10*j, size-10*j); 
 				}
 				if(j == 0) {
-					
+					g2d.setColor(Color.BLUE);
+					q1.setCurve(x0-xSize*80, y0+5,
+							x0-xSize*50 +5, y0+ySize*20 +5,
+							x0-5,y0+ySize*5);
+					/*
+					q1.setCurve(x0-xSize*80, y0+5,
+							x0-xSize*50, y0+ySize*20,
+							x0-5,y0+ySize*5);
+							*/
+					g2d.draw(q1);
 				}
 			}
         }
@@ -120,10 +131,7 @@ class ChartTest05 extends JPanel
 		g2d.setColor(Color.BLUE);
 		//g2d.drawPolyline(x_Array, y_Array, x_Array.length);
 		
-        QuadCurve2D q1 = new QuadCurve2D.Float();
-		g2d.setColor(Color.BLACK);
-		//q1.setCurve(x0-xSize*50, y0, x0-xSize*30, y0+ySize*20, x0,y0+ySize*25);
-		g2d.draw(q1);
+        
 		//画出折线图
 //		g2d.setColor(Color.BLUE);
 //		g2d.drawPolyline(x_Array, y_Array, x_Array.length);

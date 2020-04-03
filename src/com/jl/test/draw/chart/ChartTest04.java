@@ -104,7 +104,9 @@ class ChartTest04 extends JPanel
 		g2d.draw(q2);
         QuadCurve2D q3 = new QuadCurve2D.Float();
         g2d.setColor(Color.YELLOW);
-        q3.setCurve(x0-xSize*80, y0, x0-xSize*15, y0+ySize*30, x0,y0+ySize*25);
+        q3.setCurve(x0-xSize*80, y0+5,
+				x0-xSize*50 +5, y0+ySize*20 +5,
+				x0-5,y0+ySize*5);
         g2d.draw(q3);
         g2d.setFont(fn2);
         g2d.setColor(Color.white);
