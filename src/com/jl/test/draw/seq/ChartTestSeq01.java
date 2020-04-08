@@ -1,9 +1,10 @@
-package com.jl.test.draw.chart;
+package com.jl.test.draw.seq;
 import javax.swing.*;
 
 import com.jl.test.draw.arraySort.Arraysort;
 import com.jl.test.draw.utils.ChartUtil;
 import com.jl.test.draw.utils.ChartUtilOpt;
+import com.jl.test.draw.utils.SeqUtil;
 
 import java.applet.Applet;
 import java.awt.*;
@@ -21,14 +22,14 @@ import java.util.Map;
  * @author Administrator
  *指定区间取值放大
  */
-class ChartTest05 extends JPanel
+class ChartTestSeq01 extends JPanel
 {
 	ChartUtilOpt chartOpt = new ChartUtilOpt();
     Polygon po = new Polygon();
     //设置字体及大小
     Font fn = new Font("宋体", Font.BOLD, 22);
     Font fn2 = new Font("宋体", Font.BOLD, 20);
-    public ChartTest05()
+    public ChartTestSeq01()
     {
     	//获取当前屏幕的宽和高
         Dimension screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
@@ -38,19 +39,20 @@ class ChartTest05 extends JPanel
     }
     public void paint(Graphics g)
     {
-    	//获取数据
-    	String filePath = "D:/work/pointinfo_solve.csv";
-    	Map<String, double[]> map1 = getXYData(filePath);
-    	
-    
-        double[] xDataArray = map1.get("xList");
-        double[] yDataArray = map1.get("yList");
-     
-        //int x0=getSize().width/2;
-        /*
-        int x0=getSize().width/2;
-		int y0=getSize().height/2;//坐标原点 
-		*/
+    	SeqUtil seq = new SeqUtil();
+		ChartUtilOpt chart = new ChartUtilOpt();
+		String filePath = "D:/work/pointinfo_solve.csv";
+		Map<String, double[]> map = chart.getXYData(filePath);
+		
+		double[] xList = map.get("xList");
+		int[] xArray = new int[xList.length];
+		double[] y_newList = new double[xList.length];
+		int[] yArray = new int[xList.length];
+		for(int i = 0 ;i < xList.length; i++) {
+			y_newList[i] = seq.getFunctionX(xList[i]);
+			xArray[i] = (int)(xList[i]);
+			yArray[i] = (int)(y_newList[i]);
+		}
         int x0 = 500;
         int y0 = 200;
         
@@ -81,15 +83,13 @@ class ChartTest05 extends JPanel
         		g2d.drawString("-"+String.valueOf(i / ySize), x0-20, y0+i*10*(ySize / 4));
         	}
         }
-      
         int x = 0;
         int y = 0;
         //画圆的直径
         int size = 10;
-        Map<String, double[]> map = chartOpt.getAreaXY(-9,0, -2, -0.5, xDataArray, yDataArray);
-        double[] xArr = map.get("xArray");
-        double[] yArr =  map.get("yArray");
-        double xMax= chartOpt.getMax(xArr);
+        Map<String, double[]> map1 = chartOpt.getAreaXY(-20,20, -20, 20, xList, y_newList);
+        double[] xArr = map1.get("xArray");
+        double[] yArr =  map1.get("yArray");
         double xMin= chartOpt.getMin(xArr);
         double yMin= chartOpt.getMin(yArr);
         double[] xDouble = new double[2];
@@ -112,64 +112,32 @@ class ChartTest05 extends JPanel
         	x_Array[i] = (int) 	(x0+xArr[i]*xSize * 10);
         	y_Array[i] = (int)  (y0-yArr[i]*ySize * 10);
         }
-        //x, y排序
-        //Arrays.sort(x_Array);
-        //Arrays.sort(y_Array);
         //画出曲线
         QuadCurve2D q1 = new QuadCurve2D.Float();
-        QuadCurve2D q2 = new QuadCurve2D.Float();
-        QuadCurve2D q3 = new QuadCurve2D.Float();
-		g2d.setColor(Color.BLACK);
         for(int i = 0;i < xArr.length;i++) {
         	//在图上描出对应坐标
     		x = (int) (x0+xArr[i]*xSize * 10);
 			y = (int) (y0-yArr[i]*ySize * 10);
-//			g2d.drawOval(x, y, 8, 8);
 			for(int j =0;j < size;j++) {
 				//颜色比例1:25,255-(j * 25)
 				g2d.setColor(getColor(j));
 				if(x != x0 && y!=y0) {
 					g2d.drawOval(x+j, y+j, size-10*j, size-10*j); 
 				}
-				if(j == 0) {
-					if(xMax <= 0) {
-						/*
-						g2d.setColor(Color.BLUE);
-						q1.setCurve(x0+xArr[0]*xSize * 10, y0+5,
-								x0-xSize*50 +5, y0+ySize*20 +5,
-								x0,y0+yArr[yArr.length - 1]*5+5);
-						g2d.draw(q1);
-						*/
-						
-						
-					}
-				}
 			}
         }
-        //画出折线图
-		g2d.setColor(Color.BLUE);
-		//g2d.drawPolyline(x_Array, y_Array, x_Array.length);
-		
-		g2d.setColor(Color.BLUE);
-		q1.setCurve(x0+xDouble[0]*xSize * 10, y0-xDouble[1]*40,
-				x0-xSize*50 +5, y0+ySize*20 +5,
-				x0-yDouble[0],y0-yDouble[1]*50+5
+        
+        g2d.setColor(Color.BLUE);
+		q1.setCurve(x0-20*10, y0+10.9779 * 10,
+				x0,y0-0.8099*10,
+				x0+20*10,y0+16.8419*10
 				);
+		/*
+		for(int i =0 ;i < xArr.length;i++) {
+			System.out.println("x = "+xArr[i]+" ----- y = " + yArr[i]);
+		}
+		*/
 		g2d.draw(q1);
-		q2.setCurve(x0+xDouble[0]*xSize * 10, y0-xDouble[1],
-				x0-xSize*25 +5, y0+ySize*10 +5,
-				x0-yDouble[0],y0-yDouble[1]*30+5
-				);
-		g2d.draw(q2);
-		
-		g2d.setColor(Color.BLACK);
-		q3.setCurve(x0+xDouble[0]*xSize * 10, y0-xDouble[1]*20,
-				x0-xSize*40 +5, y0+ySize*15 +5,
-				x0-yDouble[0],y0-yDouble[1]*40+5);
-		g2d.draw(q3);
-		//画出折线图
-//		g2d.setColor(Color.BLUE);
-//		g2d.drawPolyline(x_Array, y_Array, x_Array.length);
 		//字体
         g2d.setFont(fn2);
         g2d.setFont(fn);
@@ -196,47 +164,6 @@ class ChartTest05 extends JPanel
     			0
     			);
     }
-    //获取坐标颜色值
-    public Color getPixel(int x,int y) throws AWTException{            //函数返回值为颜色的RGB值。
-		   Robot rb = null;                                                   //java.awt.image包中的类，可以用来抓取屏幕，即截屏。
-		   rb = new Robot();
-		   Toolkit tk = Toolkit.getDefaultToolkit();              //获取缺省工具包
-		   Dimension di = tk.getScreenSize();                   //屏幕尺寸规格
-		   Rectangle rec = new Rectangle(0,0,di.width,di.height);
-		   BufferedImage bi = rb.createScreenCapture(rec);
-		   int pixelColor = bi.getRGB(x, y);
-		   Color color=new Color(16777216 + pixelColor);  
-	       return color; // pixelColor的值为负，经过实践得出：加上颜色最大值就是实际颜色值。
-	}
-    /**
-     * 读取文件中坐标的数据
-     * @param filePath 文件路径
-     * @return
-     */
-    public Map<String, double[]> getXYData(String filePath){
-    	// 初始化
-    	ChartUtilOpt chartOpt = new ChartUtilOpt();
-    	Map<String, double[]> map = new HashMap<String, double[]>();
-    	// 读取文件
-    	List<String> csvColList = chartOpt.getCol(filePath);
-    	//获取数据
-    	List<String> YListStr = new ArrayList<String>();
-    	List<String> XListStr = new ArrayList<String>();
-    	List<String> ZListStr = new ArrayList<String>();
-    	for(int i = 0;i < csvColList.size();i++) {
-    		YListStr.add(csvColList.get(i).split("\\|")[1]);
-    		XListStr.add(csvColList.get(i).split("\\|")[0]);
-    		ZListStr.add(csvColList.get(i).split("\\|")[2]);
-    	}
-    	double[] yList =  chartOpt.getArrayByStrList(YListStr);
-    	double[] xList =  chartOpt.getArrayByStrList(XListStr);
-    	double[] zList =  chartOpt.getArrayByStrList(ZListStr);
-    	map.put("xList", xList);
-    	map.put("yList", yList);
-    	map.put("zList", zList);
-    	return map;
-    	
-    }
     
     
     public static void main(String[] args)
@@ -245,15 +172,13 @@ class ChartTest05 extends JPanel
         Dimension screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)screensize.getWidth();
         int height = (int)screensize.getHeight();
-        //960
-//        System.out.println("width / 2 ="+(width / 2));
-        //540
-//        System.out.println("height / 2 ="+(height / 2));
         JFrame jf = new JFrame();
         //设置窗口大小
         jf.setSize(1000, 1000);
         jf.setVisible(true);
         jf.setDefaultCloseOperation(3);
-        jf.getContentPane().add(new ChartTest05());
+        jf.getContentPane().add(new ChartTestSeq01());
+        
+        
     }
 }

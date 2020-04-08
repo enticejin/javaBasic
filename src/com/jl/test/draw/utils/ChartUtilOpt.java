@@ -327,8 +327,6 @@ public class ChartUtilOpt {
 		}
 		/**
 		 * 读取.csv文件数据
-		 * @param row 行
-		 * @param col 列
 		 * @param filePath 文件路径
 		 */
 		public List<String> getAllCSV(String filePath) {
@@ -437,4 +435,33 @@ public class ChartUtilOpt {
 			}
 		}
 		
+		 /**
+	     * 读取文件中坐标的数据
+	     * @param filePath 文件路径
+	     * @return
+	     */
+	    public Map<String, double[]> getXYData(String filePath){
+	    	// 初始化
+	    	ChartUtilOpt chartOpt = new ChartUtilOpt();
+	    	Map<String, double[]> map = new HashMap<String, double[]>();
+	    	// 读取文件
+	    	List<String> csvColList = chartOpt.getCol(filePath);
+	    	//获取数据
+	    	List<String> YListStr = new ArrayList<String>();
+	    	List<String> XListStr = new ArrayList<String>();
+	    	List<String> ZListStr = new ArrayList<String>();
+	    	for(int i = 0;i < csvColList.size();i++) {
+	    		YListStr.add(csvColList.get(i).split("\\|")[1]);
+	    		XListStr.add(csvColList.get(i).split("\\|")[0]);
+	    		ZListStr.add(csvColList.get(i).split("\\|")[2]);
+	    	}
+	    	double[] yList =  chartOpt.getArrayByStrList(YListStr);
+	    	double[] xList =  chartOpt.getArrayByStrList(XListStr);
+	    	double[] zList =  chartOpt.getArrayByStrList(ZListStr);
+	    	map.put("xList", xList);
+	    	map.put("yList", yList);
+	    	map.put("zList", zList);
+	    	return map;
+	    	
+	    }
 }

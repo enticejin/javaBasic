@@ -1,36 +1,49 @@
-package com.jl.test.draw.chart;
+package com.jl.test.draw.seq;
 import javax.swing.*;
 
+import com.jl.test.draw.arraySort.Arraysort;
 import com.jl.test.draw.utils.ChartUtil;
 import com.jl.test.draw.utils.ChartUtilOpt;
+import com.jl.test.draw.utils.SeqUtil;
 
+import java.applet.Applet;
 import java.awt.*;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.QuadCurve2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 /**
- * 展示文件中所有的坐标点
+ * 
  * @author Administrator
- *
+ *指定区间取值放大
  */
-class ChartTest02 extends JPanel
+class ChartSeq extends JPanel
 {
-    Polygon po = new Polygon();
+	Polygon po = new Polygon();
     //设置字体及大小
     Font fn = new Font("宋体", Font.BOLD, 22);
     Font fn2 = new Font("宋体", Font.BOLD, 20);
-    public ChartTest02()
+    public ChartSeq()
     {
         setSize(900, 900);
     }
     public void paint(Graphics g)
     {
     	String filePath = "D:/work/pointinfo_solve.csv";
-        double[] xDataArray = getXData(filePath);
-        double[] yDataArray = getYData(filePath);
-        Arrays.sort(xDataArray);
-        Arrays.sort(yDataArray);
-        //int x0=getSize().width/2;
+        SeqUtil seqUtil = new SeqUtil();
+		int seqStart = 1693641;
+		int seqEnd = seqStart + 50000;
+		List<String> seqListArea = seqUtil.getColSeq(filePath, seqStart, seqEnd);
+		List<String> seqList = seqUtil.getCol_3(seqListArea);
+		Map<String, double[]> map = seqUtil.getXYData(seqList);
+		double[] xList = map.get("xList");
+		double[] yList = map.get("yList");
+		
         int x0=getSize().width/2;
 		int y0=getSize().height/2;//坐标原点 
         super.paintComponent(g);
@@ -49,7 +62,6 @@ class ChartTest02 extends JPanel
         	if (i % 2 == 0 && i / 2 != 0)
         	{
         		//纵坐标刻度
-        		g2d.drawOval(x0, y0, 10, 10);
         		g2d.drawString("-"+String.valueOf(i / num), x0-20, y0+i*10);
         		g2d.drawString(String.valueOf(i / num), x0-20, y0-i*10);
         	}
@@ -67,13 +79,15 @@ class ChartTest02 extends JPanel
         //画圆的直径
         int size = 10;
         //遍历数组画出坐标
-        for(int i = 0;i < xDataArray.length;i++) {
-        	x = (int) (x0+xDataArray[i]*20);
-			y= (int) (y0-yDataArray[i]*20);
+        for(int i = 0;i < xList.length;i++) {
+        	x = (int) (x0+xList[i]*20);
+			y= (int) (y0-yList[i]*20);
 			//x < 0, y < 0
 			for(int j =0;j < size;j++) {
 				g2d.setColor(getColor(j));
-				g2d.drawOval(x+j, y+j, size-10*j, size-10*j); 
+				if(x != x0 && y != y0) {
+					g2d.drawOval(x+j, y+j, size-10*j, size-10*j);
+				}
 			}
         }
         g2d.setFont(fn2);
@@ -86,14 +100,6 @@ class ChartTest02 extends JPanel
         g2d.drawString("Y", x0-30, y0-400);
     }
     
-    Color getRandomColor()//随机数
-	{
-		return new Color(
-				(int)(Math.random()*255),
-				(int)(Math.random()*255),
-				(int)(Math.random()*255)
-			);
-	}
     //设置各层圈颜色
     Color getColor(int num)
     {
@@ -105,47 +111,6 @@ class ChartTest02 extends JPanel
     			0,
     			0
     			);
-    }
-    //"D:/work/pointinfo_solve.csv"
-    /**
-     * 读取文件中横坐标的数据
-     * @param filePath 文件路径
-     * @return
-     */
-    public double[] getXData(String filePath){
-    			// 初始化
-    			ChartUtilOpt chartOpt = new ChartUtilOpt();
-    			// 读取文件
-    			List<String> csvColList = chartOpt.getCol(filePath);
-    			//获取xyz数据
-    			List<String> XListStr = new ArrayList<String>();
-    			//List<String> ZListStr = new ArrayList<String>();
-    			for(int i = 0;i < csvColList.size();i++) {
-    				XListStr.add(csvColList.get(i).split("\\|")[0]);
-    				//ZListStr.add(csvColList.get(i).split("\\|")[2]);
-    			}
-    			double[] xList =  chartOpt.getArrayByStrList(XListStr);
-    	return xList;
-    	
-    }
-    /**
-     * 读取文件中纵坐标的数据
-     * @param filePath 文件路径
-     * @return
-     */
-    public double[] getYData(String filePath){
-    	// 初始化
-    	ChartUtilOpt chartOpt = new ChartUtilOpt();
-    	// 读取文件
-    	List<String> csvColList = chartOpt.getCol(filePath);
-    	//获取y数据
-    	List<String> YListStr = new ArrayList<String>();
-    	for(int i = 0;i < csvColList.size();i++) {
-    		YListStr.add(csvColList.get(i).split("\\|")[1]);
-    	}
-    	double[] yList =  chartOpt.getArrayByStrList(YListStr);
-    	return yList;
-    	
     }
     public static void main(String[] args)
     {
@@ -162,6 +127,6 @@ class ChartTest02 extends JPanel
         jf.setSize(1000, 1000);
         jf.setVisible(true);
         jf.setDefaultCloseOperation(3);
-        jf.getContentPane().add(new ChartTest02());
+        jf.getContentPane().add(new ChartSeq());
     }
 }
