@@ -77,6 +77,7 @@ public class ChartUtilOpt {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			System.out.println(allString);
 			return allString;
 		}
 		public List<String> getCol(String filePath){
