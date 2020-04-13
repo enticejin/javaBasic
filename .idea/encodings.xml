@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/spring-fileupload/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-fileupload/src/main/java/com/jl/java/draw/utils/SeqUtil.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-fileupload/src/main/resources/text/pointinfo_solve.csv" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-rest-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-validate-form-input/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-generater/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-jdbc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-upload-file/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springweb/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
