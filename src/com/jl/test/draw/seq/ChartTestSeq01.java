@@ -50,8 +50,6 @@ class ChartTestSeq01 extends JPanel
 		int[] yArray = new int[xList.length];
 		for(int i = 0 ;i < xList.length; i++) {
 			y_newList[i] = seq.getFunctionX(xList[i]);
-			xArray[i] = (int)(xList[i]);
-			yArray[i] = (int)(y_newList[i]);
 		}
         int x0 = 500;
         int y0 = 200;

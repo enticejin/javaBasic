@@ -34,13 +34,23 @@ class ChartSeq extends JPanel
     }
     public void paint(Graphics g)
     {
+    	//文件路径
     	String filePath = "D:/work/pointinfo_solve.csv";
         SeqUtil seqUtil = new SeqUtil();
-		int seqStart = 1693641;
-		int seqEnd = seqStart + 50000;
+        //获取seq所有序号
+        List<Integer> seqAllList =  seqUtil.getAllColSeq(filePath);
+        //最后的seq序号
+        Integer finalSeqNo = seqAllList.get(seqAllList.size() - 1);
+        //seq当前位置
+		int seqNow = seqAllList.get(100);
+		//seq起始位置
+		int seqStart = seqNow - 50;
+		//seq终止位置
+		int seqEnd = seqNow + 50;
 		List<String> seqListArea = seqUtil.getColSeq(filePath, seqStart, seqEnd);
-		List<String> seqList = seqUtil.getCol_3(seqListArea);
-		Map<String, double[]> map = seqUtil.getXYData(seqList);
+		//获取seq起始位置到终止位置的坐标
+		List<String> seqAreaList = seqUtil.getCol_3(seqListArea);
+		Map<String, double[]> map = seqUtil.getXYData(seqAreaList);
 		double[] xList = map.get("xList");
 		double[] yList = map.get("yList");
 		
@@ -62,31 +72,36 @@ class ChartSeq extends JPanel
         	if (i % 2 == 0 && i / 2 != 0)
         	{
         		//纵坐标刻度
-        		g2d.drawString("-"+String.valueOf(i / num), x0-20, y0+i*10);
-        		g2d.drawString(String.valueOf(i / num), x0-20, y0-i*10);
+        		g2d.drawString("-"+String.valueOf(i / num), x0-20, y0+i*20);
+        		g2d.drawString(String.valueOf(i / num), x0-20, y0-i*20);
         	}
         }
       //横坐标刻度
         //一个刻度10个像素点
         for(int i = 0;i < 60;i++) {
         	if(i % 2 == 0 && i / 2 != 0) {
-        		g2d.drawString("-"+String.valueOf(i / num), x0-i*10, y0-15);
-        		g2d.drawString(String.valueOf(i / num), x0+i*10, y0-15);
+        		g2d.drawString("-"+String.valueOf(i / num), x0-i*20, y0-15);
+        		g2d.drawString(String.valueOf(i / num), x0+i*20, y0-15);
         	}
         }
         int x = 0;
         int y = 0;
         //画圆的直径
-        int size = 10;
+        int d = 10;
         //遍历数组画出坐标
         for(int i = 0;i < xList.length;i++) {
-        	x = (int) (x0+xList[i]*20);
-			y= (int) (y0-yList[i]*20);
+        	x = (int) (x0+xList[i]*40);
+			y= (int) (y0-yList[i]*40);
+			
+			if(i == xList.length / 2) {
+				g2d.setColor(Color.BLUE);
+				g2d.drawOval((int)((x0+xList[i]*40)), (int)(y0-yList[i]*40), 20, 20);
+			}
 			//x < 0, y < 0
-			for(int j =0;j < size;j++) {
+			for(int j =0;j < d;j++) {
 				g2d.setColor(getColor(j));
 				if(x != x0 && y != y0) {
-					g2d.drawOval(x+j, y+j, size-10*j, size-10*j);
+					g2d.drawOval(x+j, y+j, d-10*j, d-10*j);
 				}
 			}
         }
@@ -118,10 +133,7 @@ class ChartSeq extends JPanel
         Dimension screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)screensize.getWidth();
         int height = (int)screensize.getHeight();
-        //960
-//        System.out.println("width / 2 ="+(width / 2));
-        //540
-//        System.out.println("height / 2 ="+(height / 2));
+        
         JFrame jf = new JFrame();
         //设置窗口大小
         jf.setSize(1000, 1000);

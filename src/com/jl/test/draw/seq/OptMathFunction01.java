@@ -1,4 +1,4 @@
-package com.jl.test.draw.chart;
+package com.jl.test.draw.seq;
 import javax.swing.*;
 
 import com.jl.test.draw.utils.ChartUtil;
@@ -14,13 +14,13 @@ import java.util.List;
  * @author Administrator
  *
  */
-class ChartTest02 extends JPanel
+class OptMathFunction01 extends JPanel
 {
     Polygon po = new Polygon();
     //设置字体及大小
     Font fn = new Font("宋体", Font.BOLD, 22);
     Font fn2 = new Font("宋体", Font.BOLD, 20);
-    public ChartTest02()
+    public OptMathFunction01()
     {
         setSize(900, 900);
     }
@@ -29,7 +29,12 @@ class ChartTest02 extends JPanel
     	String filePath = "D:/work/pointinfo_solve.csv";
     	SeqUtil seq = new SeqUtil();
         double[] xDataArray = getXData(filePath);
-        double[] yDataArray = getYData(filePath);
+        //double[] yDataArray = getYData(filePath);
+        double[] y_newList = new double[xDataArray.length];
+		for(int i = 0 ;i < xDataArray.length; i++) {
+			y_newList[i] = seq.getFunctionX(xDataArray[i]);
+		}
+		//y = -0.03275 x^2 - 0.1466 x - 0.8099
 //        Arrays.sort(xDataArray);
 //        Arrays.sort(yDataArray);
         //int x0=getSize().width/2;
@@ -70,7 +75,7 @@ class ChartTest02 extends JPanel
         //遍历数组画出坐标
         for(int i = 0;i < xDataArray.length;i++) {
         	x = (int) (x0+xDataArray[i]*20);
-			y= (int) (y0-yDataArray[i]*20);
+			y= (int) (y0-y_newList[i]*20);
 			//x < 0, y < 0
 			for(int j =0;j < size;j++) {
 				g2d.setColor(getColor(j));
@@ -163,6 +168,6 @@ class ChartTest02 extends JPanel
         jf.setSize(1000, 1000);
         jf.setVisible(true);
         jf.setDefaultCloseOperation(3);
-        jf.getContentPane().add(new ChartTest02());
+        jf.getContentPane().add(new OptMathFunction01());
     }
 }
