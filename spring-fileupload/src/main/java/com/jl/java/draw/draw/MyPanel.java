@@ -2,11 +2,10 @@ package com.jl.java.draw.draw;
 
 import com.jl.java.draw.utils.SeqUtil;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ public class MyPanel extends JPanel {
             redtowhite = new GradientPaint(b.xListScreen.get(i), b.yListScreen.get(i),Color.RED,b.xListScreen.get(i) + width , b.yListScreen.get(i) + height,Color.white);
             g2.setPaint(redtowhite);
             g2.fill (new Ellipse2D.Double(b.xListScreen.get(i), b.yListScreen.get(i), width, height));
+
         }
 		/*
 		for(int i = xSize;i < xAllSize;i++) {
@@ -94,7 +94,7 @@ public class MyPanel extends JPanel {
         g.drawString("Y", x0-30, y0-400);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException {
         Ball b = new Ball();
         MyPanel p = new MyPanel(b);
         b.setPanel(p);
@@ -126,6 +126,9 @@ class Ball extends Thread {
     List<Integer>yAllListScreen = XYScreen.get("yAllListScreen");
 
     MyPanel p;
+
+    Ball() throws UnsupportedEncodingException, FileNotFoundException {
+    }
 
     public void setPanel(MyPanel p) {
         this.p = p;
@@ -219,5 +222,26 @@ class Ball extends Thread {
         mapXYScreen.put("xAllListScreen", xAllListScreen);
         mapXYScreen.put("yAllListScreen", yAllListScreen);
         return mapXYScreen;
+    }
+
+    /**
+     * 获取颜色值
+     * @param x 屏幕横坐标
+     * @param y 屏幕纵坐标
+     * @return
+     * @throws AWTException
+     */
+    public Color getScreenPixel(int x, int y) throws AWTException { // 函数返回值为颜色的RGB值。
+        Robot rb = null; // java.awt.image包中的类，可以用来抓取屏幕，即截屏。
+        rb = new Robot();
+        Toolkit tk = Toolkit.getDefaultToolkit(); // 获取缺省工具包
+        Dimension di = tk.getScreenSize(); // 屏幕尺寸规格
+        System.out.println(di.width);
+        System.out.println(di.height);
+        Rectangle rec = new Rectangle(0, 0, di.width, di.height);
+        BufferedImage bi = rb.createScreenCapture(rec);
+        int pixelColor = bi.getRGB(x, y);
+        Color color=new Color(16777216 + pixelColor);
+        return color; // pixelColor的值为负，经过实践得出：加上颜色最大值就是实际颜色值。
     }
 }
