@@ -7,46 +7,54 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="springboot-mybatis" />
-        <module name="springboot-upload-file" />
-        <module name="springboot-jdbc" />
-        <module name="in_de_up_sel" />
         <module name="spring-validate-form-input" />
-        <module name="springboot" />
-        <module name="helloworld" />
+        <module name="springboot-jdbc" />
+        <module name="spring-redis" />
+        <module name="springboot-upload-file" />
         <module name="spring-fileupload" />
         <module name="springboot-generater" />
-        <module name="spring-rest-service" />
+        <module name="authenticating-ldap" />
+        <module name="springboot" />
+        <module name="in_de_up_sel" />
         <module name="springweb" />
+        <module name="springboot-mybatis" />
+        <module name="spring-rest-service" />
+        <module name="helloworld" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="authenticating-ldap" target="1.8" />
       <module name="helloworld" target="1.8" />
       <module name="in_de_up_sel" target="1.8" />
       <module name="spring-fileupload" target="1.8" />
       <module name="spring-gateway" target="1.8" />
+      <module name="spring-redis" target="1.8" />
       <module name="spring-rest-service" target="1.8" />
       <module name="spring-validate-form-input" target="1.8" />
       <module name="springboot" target="1.8" />
       <module name="springboot-generater" target="1.8" />
       <module name="springboot-jdbc" target="1.8" />
       <module name="springboot-mybatis" target="1.8" />
+      <module name="springboot-security" target="1.8" />
       <module name="springboot-upload-file" target="1.8" />
       <module name="springweb" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="authenticating-ldap" options="-parameters" />
       <module name="helloworld" options="-parameters" />
       <module name="in_de_up_sel" options="-parameters" />
       <module name="spring-fileupload" options="-parameters" />
       <module name="spring-gateway" options="-parameters" />
+      <module name="spring-redis" options="-parameters" />
       <module name="spring-rest-service" options="-parameters" />
       <module name="spring-validate-form-input" options="-parameters" />
       <module name="springboot" options="-parameters" />
       <module name="springboot-generater" options="-parameters" />
       <module name="springboot-jdbc" options="-parameters" />
       <module name="springboot-mybatis" options="-parameters" />
+      <module name="springboot-security" options="-parameters" />
       <module name="springboot-upload-file" options="-parameters" />
       <module name="springweb" options="-parameters" />
     </option>

@@ -298,4 +298,31 @@ public class SeqUtil {
         map.put("finalSeqNo", finalSeqNo);
         return map;
     }
+
+    /**
+     * 优化list取相邻值的均值
+     * @param list list列表
+     * @return
+     */
+    public List<Integer> getArrayOpt(List<Integer> list) {
+        int size = list.size();
+        List<Integer> list1 = new ArrayList<Integer>();
+        for(int i = 0 ;i < size -1; i++) {
+            if(i <= size - 1 && i > 0) {
+                if((list.get(i) < 0 && list.get(i+1)< 0)||(list.get(i) > 0 && list.get(i+1)> 0)) {
+                    list1.add((list.get(i) + list.get(i - 1)) / 2);
+                }else {
+                    list1.add((list.get(i) + list.get(i - 1)));
+                }
+            }
+            if(i == 0) {
+                if((list.get(i) < 0 && list.get(i+1)< 0)||(list.get(i) > 0 && list.get(i+1)> 0)) {
+                    list1.add((list.get(i) + list.get(i + 1)) / 2);
+                }else {
+                    list1.add((list.get(i) + list.get(i + 1)));
+                }
+            }
+        }
+        return list1;
+    }
 }

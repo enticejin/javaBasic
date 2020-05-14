@@ -7,7 +7,7 @@
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
           <factory-entry name="Entities" />
-          <factory-entry name="spring-rest-service" />
+          <factory-entry name="spring-rest-service" value="a70b91d4-22fc-4b9a-baf8-23b48ceb5457" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>
