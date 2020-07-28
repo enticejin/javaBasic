@@ -1,14 +1,19 @@
 package com.example.jpa.controller;
 
 import com.example.jpa.model.SysUser;
+import com.example.jpa.rtle.user.model.User;
+import com.example.jpa.rtle.user.service.UserService;
 import com.example.jpa.service.SysUserService;
 import com.example.jpa.util.PageQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-public class SysUserController {
+public class Usertroller {
     @Autowired
     private SysUserService sysUserService;
 
@@ -30,4 +35,5 @@ public class SysUserController {
     public Object findPage(@RequestBody PageQuery pageQuery){
         return sysUserService.findPage(pageQuery);
     }
+
 }

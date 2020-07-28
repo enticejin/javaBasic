@@ -16,4 +16,10 @@ spring:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         #physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+    suffix: .html
+    prefix: templates
+  mvc:
+    static-path-pattern: static/**
